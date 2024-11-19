@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProgressCircleView: View {
-    @Binding var progress: CGFloat
+    var progress: CGFloat
     var color: Color
     var lineWidth: CGFloat
     var goal : CGFloat
@@ -20,7 +20,7 @@ struct ProgressCircleView: View {
                 .stroke(color.opacity(0.4), style: StrokeStyle( lineWidth: lineWidth,  lineCap: .round))
                 .rotationEffect(.degrees(108))
             Circle()
-                .trim(from:0, to:(0.1+(progress/goal)*0.8))
+                .trim(from:0, to:((progress/goal)*0.9))
                 .stroke(color, style: StrokeStyle( lineWidth: lineWidth,  lineCap: .round))
                 .rotationEffect(.degrees(108))
         }
@@ -29,5 +29,5 @@ struct ProgressCircleView: View {
 
 #Preview {
     let progress: CGFloat = 250
-    ProgressCircleView(progress: .constant(progress), color: .red, lineWidth: 20, goal: 360.0)
+    ProgressCircleView(progress:progress, color: .red, lineWidth: 20, goal: 360.0)
 }

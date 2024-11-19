@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AccountView: View {
     @EnvironmentObject var mainDataModel: MainDataModel
+    @EnvironmentObject var authProvider: AuthenticationProvider
+
     @State private var activeSheet: ActiveSheet? // Track the active sheet
         
         enum ActiveSheet: Identifiable {
@@ -88,8 +90,6 @@ struct AccountView: View {
         VStack{
             ScrollView{
                 VStack{
-                    
-                    
                     ProfileView(user: mainDataModel.userProfile!, editProfileAction: {
                         activeSheet = .userProfile
                     }
@@ -107,6 +107,20 @@ struct AccountView: View {
                         //                    editFitnessLevelAction: { print("Edit Fitness Level Action Triggered") },
                         editWeeklyWorkoutGoalAction: { activeSheet = .workoutGoal}
                     )
+                    Button(action: {
+                        Task {
+                            try await authProvider.signOut()
+                        }
+                    }
+                        ,label: {
+                        Text("Sign Out")
+                            .padding()
+                            .frame(maxWidth: . infinity)
+                        })
+                    .foregroundStyle(Color.white)
+                    .background(Color.red)
+                    .cornerRadius(25.0)
+                    .padding()
                                     .sheet(item: $activeSheet) { item in
                                         switch item {
                                         case .weight:

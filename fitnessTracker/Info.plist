@@ -13,5 +13,10 @@
 			</array>
 		</dict>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>trackmyProgressLogo</string>
+	</dict>
 </dict>
 </plist>

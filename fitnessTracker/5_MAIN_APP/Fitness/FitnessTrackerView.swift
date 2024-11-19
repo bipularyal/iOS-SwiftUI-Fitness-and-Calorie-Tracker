@@ -1,96 +1,105 @@
-//
-//  PlanView.swift
-//  fitnessTracker
-//
-//  Created by Bipul Aryal on 10/24/24.
-//
-
 import SwiftUI
 
-struct FitnessTrackerView: View {
-    @EnvironmentObject var authProvider: AuthenticationProvider
-    @State var calories: CGFloat = 100
-    @State var activeTime: CGFloat = 40
-    @State var standTime: CGFloat = 6
+struct WorkoutTrackerView: View {
+    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var mainDataModel: MainDataModel
+
+    @StateObject private var viewModel: WorkoutTrackerViewModel
+
+    @State private var currentWeekIndex: Int = 1
+    @State private var showWorkoutAdd = false
+
+    init() {
+        _viewModel = StateObject(wrappedValue: WorkoutTrackerViewModel())
+    }
+
+    func addWorkoutToData(_ workoutName: String, _ sets: [(weight: Double, reps: Int)]) {
+        viewModel.addWorkoutToDateWorkoutLog(name: workoutName, sets: sets)
+    }
+
     var body: some View {
-        ScrollView {
-            VStack{
-                Text("Welcome Bipul").font(.largeTitle)
-                    .padding()
-                HStack{
-                    Spacer()
+        VStack {
+            // Date Picker View
+            DatePickerView(
+                currentDate: viewModel.currentDate,
+                currentWeekIndex: $currentWeekIndex,
+                changeDate: viewModel.setNewDate
+            )
+            .padding(.bottom, 10)
+
+            // Main Content
+            if let dailyLog = viewModel.selectedDateWorkoutLog {
+                if dailyLog.workoutsCompleted.isEmpty {
+                    // Show Add Workout Button if no workouts
                     Button(action: {
-                        Task {
-                            try await authProvider.signOut()
-                        }
+                        showWorkoutAdd = true
+                    }) {
+                        Text("Add Workout")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue.cornerRadius(10))
                     }
-                        ,label: {
-                            Image(systemName: "logout")
-                        Text("Sign Out")
-                        })
-                    
-                    VStack{
-                        VStack{
-                            Text(" Calories").font(.callout).bold().foregroundColor(.red)
-                            Text("1000").bold()
-                        }.padding(.bottom)
-                        VStack{
-                            Text(" ActivityTime").font(.callout).bold().foregroundColor(.green)
-                            Text("1000 mins").bold()
-                        }.padding(.bottom)
-                        VStack{
-                            Text("Stand Time").font(.callout).bold().foregroundColor(.blue)
-                            Text("4 hours").bold()
+                    .padding(.horizontal)
+                } else {
+                    // Show list of workouts
+                    ScrollView {
+                        VStack(spacing: 15) {
+                            ForEach(dailyLog.workoutsCompleted, id: \.id) { workout in
+                                WorkoutRowView(workout: workout)
+                            }
+
+                            Button(action: {
+                                showWorkoutAdd = true
+                            }) {
+                                Text("Add Another Workout")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue.cornerRadius(10))
+                            }
+                            .padding(.horizontal)
                         }
+                        .padding(.top)
                     }
-                    Spacer()
-                    ZStack{
-                        ProgressCircleView(progress: $calories, color: .red, lineWidth: 20, goal: CGFloat(500.0))
-                        ProgressCircleView(progress: $activeTime, color: .green, lineWidth: 20, goal: CGFloat(60)).padding(20)
-                        ProgressCircleView(progress: $standTime, color: .blue, lineWidth: 20, goal: CGFloat(4)).padding(40)
-                        Spacer()
-                    }.padding()
-                    Spacer()
                 }
-                LazyVGrid(columns:Array(repeating:GridItem(spacing:10), count:2)){
-//                    ActivitySectionCardView(activity: Activity(
-//                        id: 1,
-//                        activityType: "Steps",
-//                        goal: "10000",
-//                        iconName: "figure.walk",
-//                        progressAmount: "6,121",
-//                        color: Color(uiColor: .systemGray6)
-//                    ))
-//                    ActivitySectionCardView(activity: Activity(
-//                        id: 1,
-//                        activityType: "Steps",
-//                        goal: "10000",
-//                        iconName: "figure.walk",
-//                        progressAmount: "6,121",
-//                        color: Color(uiColor: .systemGray6)
-//                    ))
-//                    ActivitySectionCardView(activity: Activity(
-//                        id: 1,
-//                        activityType: "Steps",
-//                        goal: "10000",
-//                        iconName: "figure.walk",
-//                        progressAmount: "6,121",
-//                        color: Color(uiColor: .systemGray6)
-//                    ))
-//                    ActivitySectionCardView(activity: Activity(
-//                        id: 1,
-//                        activityType: "Steps",
-//                        goal: "10000",
-//                        iconName: "figure.walk",
-//                        progressAmount: "6,121",
-//                        color: Color(uiColor: .systemGray6)
-//                    ))
-                }.padding(.horizontal)
+            } else {
+                LoadingView() // Show loading state if no daily log is loaded
+            }
+        }
+        .onAppear {
+            self.viewModel.setModelContext(self.modelContext)
+        }
+        .sheet(isPresented: $showWorkoutAdd) {
+            WorkoutAddView { workoutName, sets in
+                addWorkoutToData(workoutName, sets.map { ($0.weight, $0.reps) })
             }
         }
     }
 }
 
-#Preview {
-    FitnessTrackerView()
+// MARK: - WorkoutRowView
+
+struct WorkoutRowView: View {
+    let workout: WorkoutCompletedEntity
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(workout.name) // Replace with a workout name lookup if needed
+                .font(.headline)
+            
+            ForEach(workout.setsCompleted, id: \.self) { set in
+                HStack {
+                    Text("Weight: \(set.weight, specifier: "%.1f") lbs")
+                    Spacer()
+                    Text("Reps: \(set.reps)")
+                }
+                .font(.subheadline)
+            }
+        }
+        .padding()
+        .background(Color.gray.opacity(0.2).cornerRadius(8))
+    }
 }

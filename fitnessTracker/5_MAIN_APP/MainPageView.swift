@@ -27,7 +27,7 @@ struct MainPageView: View {
                 }
                 .tag(1)
 
-            FitnessTrackerView()
+            FitnessView()
                 .tabItem {
                     Label("Workouts", systemImage: "dumbbell.fill")
                 }
@@ -35,7 +35,7 @@ struct MainPageView: View {
             
             DashboardView()
                 .tabItem {
-                    Label("Dashboard", systemImage: "list.bullet.clipboard")
+                    Label("Info", systemImage: "list.bullet.clipboard")
                 }
                 .tag(0)  // Assign a tag to each tab
 

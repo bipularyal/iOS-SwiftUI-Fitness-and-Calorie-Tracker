@@ -9,8 +9,18 @@ import SwiftUI
 
 struct DashboardView: View {
     var body: some View {
-        Text("Hello, WeightTrackerView!")
-    }
+            TabView {
+                WorkoutDetailsView()
+                    .tabItem {
+                        Label("Workout Details", systemImage: "list.bullet")
+                    }
+
+                YourProgressView()
+                    .tabItem {
+                        Label("Your Progress", systemImage: "chart.bar.fill")
+                    }
+            }
+        }
 }
 
 #Preview {

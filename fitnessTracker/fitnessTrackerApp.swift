@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAuth
 import GoogleSignIn
-
+import SwiftData
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
@@ -42,6 +42,17 @@ struct fitnessTrackerApp: App {
                 NavigationView {
                     ContentView(userId: userId)
                         .environmentObject(authProvider)
+                        .modelContainer(for: [
+                            DailyFoodLogEntity.self,
+                            MealEntity.self,
+                            FoodEntryEntity.self,
+                            FoodEntity.self,
+                            ServingOptionEntity.self,
+                            SetEntity.self,
+                            WorkoutCompletedEntity.self ,
+                            DailyWorkoutLogEntity.self,
+                            WorkoutEntity.self
+                        ])
                 }
             }
         }
