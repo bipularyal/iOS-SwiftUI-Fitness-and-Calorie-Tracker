@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24B83" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Height" representedClassName="Height" syncable="YES" codeGenerationType="class">
+        <attribute name="feet" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="inches" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfileData" inverseName="height" inverseEntity="UserProfileData"/>
+    </entity>
+    <entity name="UserCalorieData" representedClassName="UserCalorieData" syncable="YES" codeGenerationType="class">
+        <attribute name="activityLevel" optional="YES" attributeType="String"/>
+        <attribute name="currentWeight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="dailyCalorieTarget" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="goalWeight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="maintainenceCalorieTarget" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String"/>
+        <attribute name="weightChangePerWeek" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="weightGoalType" optional="YES" attributeType="String"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfileData" inverseName="calorie" inverseEntity="UserProfileData"/>
+    </entity>
+    <entity name="UserFitnessData" representedClassName="UserFitnessData" syncable="YES" codeGenerationType="class">
+        <attribute name="fitnessLevel" optional="YES" attributeType="String"/>
+        <attribute name="weelkyWorkoutGoal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserProfileData" inverseName="fitness" inverseEntity="UserProfileData"/>
+    </entity>
+    <entity name="UserProfileData" representedClassName="UserProfileData" syncable="YES" codeGenerationType="class">
+        <attribute name="age" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="phoneNumber" optional="YES" attributeType="String"/>
+        <attribute name="profilePicLink" optional="YES" attributeType="URI"/>
+        <attribute name="sex" optional="YES" attributeType="String"/>
+        <attribute name="userId" optional="YES" attributeType="String"/>
+        <relationship name="calorie" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserCalorieData" inverseName="user" inverseEntity="UserCalorieData"/>
+        <relationship name="fitness" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserFitnessData" inverseName="user" inverseEntity="UserFitnessData"/>
+        <relationship name="height" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Height" inverseName="user" inverseEntity="Height"/>
+    </entity>
+</model>
